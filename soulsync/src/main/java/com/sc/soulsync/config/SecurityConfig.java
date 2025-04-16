@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // very important
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

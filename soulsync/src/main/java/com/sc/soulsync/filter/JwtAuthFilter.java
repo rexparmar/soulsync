@@ -1,5 +1,6 @@
 package com.sc.soulsync.filter;
 
+import com.sc.soulsync.model.User;
 import com.sc.soulsync.repository.UserRepository;
 import com.sc.soulsync.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -44,14 +46,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         userEmail = jwtService.extractEmail(jwtToken);
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = (UserDetails) userRepository.findByEmail(userEmail).orElse(null);
+            User user = userRepository.findByEmail(userEmail).orElse(null);
 
-            if (userDetails != null && jwtService.isTokenValid(jwtToken, userEmail)) {
+            if (user != null && jwtService.isTokenValid(jwtToken, userEmail)) {
+                UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                        user.getEmail(),
+                        user.getPasswordHash(),
+                        new ArrayList<>() // no roles yet
+                );
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }

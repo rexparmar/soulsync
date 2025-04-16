@@ -1,9 +1,6 @@
 package com.sc.soulsync.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +19,9 @@ public class User implements UserDetails {
     private String email;
     private String passwordHash;
     private LocalDate createdAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Mood> moodEntries;
 
     public Long getId() {
         return id;
