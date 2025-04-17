@@ -11,7 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/mood")
@@ -36,5 +38,17 @@ public class MoodController {
         User user = userRepo.findById(userId).orElseThrow(()->new UsernameNotFoundException("User not found!"));
         String userEmail = user.getEmail();
         return moodService.getMoodEntries(userEmail);
+    }
+
+    @GetMapping("/stats")
+    public Map<String, Integer> getMoodStats(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return moodService.getMoodStats(email);
+    }
+
+    @GetMapping("/stats/weekly")
+    public Map<LocalDate, Map<String, Integer>> getWeeklyStats(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return moodService.getWeeklystats(email);
     }
 }
