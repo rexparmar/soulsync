@@ -6,6 +6,7 @@ import com.sc.soulsync.model.User;
 import com.sc.soulsync.repository.MoodRepository;
 import com.sc.soulsync.repository.UserRepository;
 import com.sc.soulsync.service.MoodService;
+import com.sc.soulsync.service.QuoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,7 +25,10 @@ public class MoodController {
     private MoodService moodService;
     @Autowired
     private UserRepository userRepo;
-    
+    @Autowired
+    private QuoteService quoteService;
+
+
     @PostMapping
     public MoodEntryResponse addMood(@RequestBody MoodEntryRequest moodEntryRequest){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -50,5 +54,22 @@ public class MoodController {
     public Map<LocalDate, Map<String, Integer>> getWeeklyStats(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return moodService.getWeeklystats(email);
+    }
+
+    @GetMapping("/stats/streak")
+    public Map<String, Integer> getStreak(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return moodService.getMoodStreakStats(email);
+    }
+
+    @GetMapping("/stats/frequent")
+    public Map<String, Object> getMostFrequentMood() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return moodService.getMostFrequentMood(email);
+    }
+
+    @GetMapping("/suggestions")
+    public Map<String, String> getQuote(@RequestParam String mood) {
+        return quoteService.getQuoteForMood(mood);
     }
 }
