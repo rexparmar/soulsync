@@ -22,16 +22,20 @@ public class MoodService {
     private MoodRepository moodRepo;
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private QuoteService quoteService;
 
     public MoodEntryResponse addMood(MoodEntryRequest moodEntryRequest, String userEmail){
         User user = userRepo.findByEmail(userEmail).orElseThrow(()-> new UsernameNotFoundException("user not found!"));
         Mood mood = new Mood();
+        Map<String,String> quoteMap = quoteService.getQuoteForMood(moodEntryRequest.getMood());
+        String quote = quoteMap.get("quote");
         mood.setMood(moodEntryRequest.getMood());
         mood.setJournalText(moodEntryRequest.getJournalText());
         mood.setCreatedAt(LocalDateTime.now());
         mood.setUser(user);
         moodRepo.save(mood);
-        return new MoodEntryResponse(moodEntryRequest.getMood(),moodEntryRequest.getJournalText(),LocalDateTime.now());
+        return new MoodEntryResponse(moodEntryRequest.getMood(),moodEntryRequest.getJournalText(),LocalDateTime.now(),quote);
     }
 
     public List<MoodEntryResponse> getMoodEntries(String email){
@@ -39,7 +43,7 @@ public class MoodService {
         List<Mood> moodList=moodRepo.findByUser(user);
         List<MoodEntryResponse> responseList = new ArrayList<>();
         for(Mood mood : moodList){
-            MoodEntryResponse res = new MoodEntryResponse(mood.getMood(),mood.getJournalText(),mood.getCreatedAt());
+            MoodEntryResponse res = new MoodEntryResponse(mood.getMood(),mood.getJournalText(),mood.getCreatedAt(),null);
             responseList.add(res);
         }
         return responseList;

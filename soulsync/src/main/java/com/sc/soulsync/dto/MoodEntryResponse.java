@@ -8,13 +8,15 @@ public class MoodEntryResponse {
     private String mood;
     private String journalText;
     private LocalDateTime createdAt;
+    private String quote;
     
     public MoodEntryResponse(){};
     
-    public MoodEntryResponse(String mood, String journalText, LocalDateTime createdAt){
+    public MoodEntryResponse(String mood, String journalText, LocalDateTime createdAt, String quote){
         this.mood=mood;
         this.journalText=journalText;
         this.createdAt=createdAt;
+        this.quote=quote;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -41,4 +43,11 @@ public class MoodEntryResponse {
         this.journalText = journalText;
     }
 
+    public void setQuote(String quote){
+        this.quote=quote;
+    }
+
+    public String getQuote(){
+        return quote;
+    }
 }
