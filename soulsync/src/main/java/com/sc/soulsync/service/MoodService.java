@@ -24,6 +24,8 @@ public class MoodService {
     private UserRepository userRepo;
     @Autowired
     private QuoteService quoteService;
+    @Autowired
+    private MoodRepository moodRepository;
 
     public MoodEntryResponse addMood(MoodEntryRequest moodEntryRequest, String userEmail){
         User user = userRepo.findByEmail(userEmail).orElseThrow(()-> new UsernameNotFoundException("user not found!"));
@@ -143,5 +145,58 @@ public class MoodService {
         result.put("mostFrequentMood", topMood);
         result.put("count", maxCount);
         return result;
+    }
+
+    public Map<String, Object> getDashboardStats(String userEmail){
+            Map<String, Object> dashboard = new HashMap<>();
+
+            Map<String, Object> moodMap = getMostFrequentMood(userEmail);
+            dashboard.put("mostFrequentMood", moodMap.get("mostFrequentMood"));
+
+            Map<String, Integer> streaks = getMoodStreakStats(userEmail);
+            dashboard.put("currentStreak", streaks.get("currentStreak"));
+            dashboard.put("maxStreak", streaks.get("maxStreak"));
+
+            Map<LocalDate, Map<String, Integer>> weeklyStats = getWeeklystats(userEmail);
+            dashboard.put("lastWeekStats", weeklyStats);
+
+            return dashboard;
+    }
+
+    public Map<String,String> saveMoodEntry(Long moodId, String userEmail) throws Exception {
+        User user = userRepo.findByEmail(userEmail).orElseThrow(()-> new UsernameNotFoundException("User not found!"));
+        Mood mood = moodRepository.findById(moodId).orElseThrow(()-> new Exception("No Entry Found!"));
+        if(!mood.getUser().equals(user)){
+            throw new Exception("Access Denied!");
+        }
+        mood.setSaved(true);
+        moodRepo.save(mood);
+        Map<String,String> res = new HashMap<>();
+        res.put("message","Save Success!");
+        return res;
+    }
+
+    public List<MoodEntryResponse> getSavedMood(String userEmail){
+        User user = userRepo.findByEmail(userEmail).orElseThrow(()->new UsernameNotFoundException("User not found!"));
+        List<Mood> moodList = moodRepo.findByUserAndIsSavedTrue(user);
+        List<MoodEntryResponse> res= new ArrayList<>();
+        for(Mood mood : moodList){
+            res.add(new MoodEntryResponse(mood.getMood(), mood.getJournalText(), mood.getCreatedAt(), null));
+        }
+        return res;
+    }
+
+
+    public Map<String,String> unSaveMoodEntry(Long moodId, String userEmail) throws Exception {
+        User user = userRepo.findByEmail(userEmail).orElseThrow(()-> new UsernameNotFoundException("User not found!"));
+        Mood mood = moodRepository.findById(moodId).orElseThrow(()-> new Exception("No Entry Found!"));
+        if(!mood.getUser().equals(user)){
+            throw new Exception("Access Denied!");
+        }
+        mood.setSaved(false);
+        moodRepo.save(mood);
+        Map<String,String> res = new HashMap<>();
+        res.put("message","Unsave Success!");
+        return res;
     }
 }

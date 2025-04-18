@@ -72,4 +72,31 @@ public class MoodController {
     public Map<String, String> getQuote(@RequestParam String mood) {
         return quoteService.getQuoteForMood(mood);
     }
+
+    @GetMapping("/stats/dashboard")
+    public Map<String, Object> getDashboardStats() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return moodService.getDashboardStats(email);
+    }
+
+    @GetMapping("/saved")
+    public List<MoodEntryResponse> getSaved(String userEmail){
+        userEmail=SecurityContextHolder.getContext().getAuthentication().getName();
+        return moodService.getSavedMood(userEmail);
+    }
+
+    @PutMapping("/save/{moodId}")
+    public Map<String,String> saveMood(@PathVariable Long moodId) throws Exception{
+        String userEmail=SecurityContextHolder.getContext().getAuthentication().getName();
+        return moodService.saveMoodEntry(moodId,userEmail);
+    }
+
+
+    @PutMapping("/unsave/{moodId}")
+    public Map<String,String> unSaveMood(@PathVariable Long moodId) throws Exception{
+        String userEmail=SecurityContextHolder.getContext().getAuthentication().getName();
+        return moodService.unSaveMoodEntry(moodId,userEmail);
+    }
+
+
 }

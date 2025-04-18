@@ -9,4 +9,5 @@ import java.util.List;
 public interface MoodRepository extends JpaRepository<Mood,Long> {
     List<Mood> findByUser(User user);
     List<Mood> findByUserAndCreatedAtBetween(User user, LocalDateTime start, LocalDateTime end);
+    List<Mood> findByUserAndIsSavedTrue(User user);
 }

@@ -13,6 +13,7 @@ public class Mood {
     private String mood;
     private String journalText;
     private LocalDateTime createdAt;
+    private boolean isSaved = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -58,4 +59,11 @@ public class Mood {
         this.user = user;
     }
 
+    public boolean isSaved() {
+        return isSaved;
+    }
+
+    public void setSaved(boolean saved) {
+        isSaved = saved;
+    }
 }
