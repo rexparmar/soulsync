@@ -58,4 +58,16 @@ public class UserService {
         user.setReminderEnabled(reminderRequest.isEnabled());
         userRepo.save(user);
     }
+
+    public ReminderRequest getReminderSettings(String userEmail){
+        User user = userRepo.findByEmail(userEmail).orElseThrow(()->
+                new UsernameNotFoundException("Error : User not found!"));
+        LocalTime time = user.getReminderTime();
+        boolean isEnabled = user.isReminderEnabled();
+        ReminderRequest req = new ReminderRequest();
+        req.setEnabled(isEnabled);
+        req.setTime(time.toString());
+        return req;
+    }
+
 }

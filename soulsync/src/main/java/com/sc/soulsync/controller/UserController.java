@@ -26,5 +26,11 @@ public class UserController {
         return ResponseEntity.ok("Reminder settings updated!");
     }
 
+    @GetMapping("/reminder")
+    public ReminderRequest getReminderSettings() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.getReminderSettings(email);
+    }
+
 
 }
