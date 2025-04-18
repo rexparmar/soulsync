@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class User implements UserDetails {
     private String email;
     private String passwordHash;
     private LocalDate createdAt;
+    private LocalTime reminderTime;
+    private boolean reminderEnabled = true;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Mood> moodEntries;
@@ -78,4 +81,21 @@ public class User implements UserDetails {
     public String getUsername() {
         return "";
     }
+
+    public LocalTime getReminderTime() {
+        return reminderTime;
+    }
+
+    public void setReminderTime(LocalTime reminderTime) {
+        this.reminderTime = reminderTime;
+    }
+
+    public boolean isReminderEnabled() {
+        return reminderEnabled;
+    }
+
+    public void setReminderEnabled(boolean reminderEnabled) {
+        this.reminderEnabled = reminderEnabled;
+    }
+
 }

@@ -3,13 +3,16 @@ package com.sc.soulsync.service;
 import com.sc.soulsync.dto.AuthResponse;
 import com.sc.soulsync.dto.LoginRequest;
 import com.sc.soulsync.dto.RegisterRequest;
+import com.sc.soulsync.dto.ReminderRequest;
 import com.sc.soulsync.model.User;
 import com.sc.soulsync.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Service
 public class UserService {
@@ -46,5 +49,13 @@ public class UserService {
             return new AuthResponse("Login Successful!",jwtService.generateToken(loginUser.getEmail()));
         }
         return new AuthResponse("Login Failed! Please check credentials once again. Make sure email and passwords are correct!");
+    }
+
+    public void updateReminder(String userEmail, ReminderRequest reminderRequest){
+        User user = userRepo.findByEmail(userEmail).orElseThrow(()->
+                new UsernameNotFoundException("User not found!"));
+        user.setReminderTime(LocalTime.parse(reminderRequest.getTime()));
+        user.setReminderEnabled(reminderRequest.isEnabled());
+        userRepo.save(user);
     }
 }
