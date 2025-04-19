@@ -1,10 +1,10 @@
-# Step 1: Use Gradle image to build the JAR
+# Step 1: Build the app using Gradle
 FROM gradle:8.5.0-jdk17 AS build
-COPY --no-cache . /home/app
+COPY . /home/app
 WORKDIR /home/app
 RUN gradle build -x test
 
-# Step 2: Use smaller JDK image to run the JAR
+# Step 2: Run the app using a lighter JDK
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
 COPY --from=build /home/app/build/libs/*.jar app.jar
