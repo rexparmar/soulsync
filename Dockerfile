@@ -1,8 +1,7 @@
 FROM gradle:8.5.0-jdk17 AS build
 COPY . /home/app
 WORKDIR /home/app
-RUN chmod +x ./gradlew
-RUN ./gradlew build -x test
+RUN gradle build -x test
 
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
