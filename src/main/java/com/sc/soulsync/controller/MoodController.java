@@ -37,10 +37,9 @@ public class MoodController {
         return moodService.addMood(moodEntryRequest,email);
     }
 
-    @GetMapping("/{userId}")
-    public List<MoodEntryResponse> getMoods(@PathVariable Long userId){
-        User user = userRepo.findById(userId).orElseThrow(()->new UsernameNotFoundException("User not found!"));
-        String userEmail = user.getEmail();
+    @GetMapping()
+    public List<MoodEntryResponse> getMoods(String userEmail){
+        userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         return moodService.getMoodEntries(userEmail);
     }
 

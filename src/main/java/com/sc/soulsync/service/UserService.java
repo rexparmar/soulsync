@@ -37,7 +37,7 @@ public class UserService {
             newUser.setCreatedAt(LocalDate.now());
             newUser.setPasswordHash(password);
             userRepo.save(newUser);
-            return new AuthResponse("Register Successful!",null);
+            return new AuthResponse("Register Successful!", jwtService.generateToken(registerRequest.getEmail()));
         }
     }
 

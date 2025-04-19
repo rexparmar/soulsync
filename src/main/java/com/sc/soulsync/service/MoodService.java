@@ -36,6 +36,7 @@ public class MoodService {
         mood.setJournalText(moodEntryRequest.getJournalText());
         mood.setCreatedAt(LocalDateTime.now());
         mood.setUser(user);
+        mood.setSaved(moodEntryRequest.isSaved());
         moodRepo.save(mood);
         return new MoodEntryResponse(moodEntryRequest.getMood(),moodEntryRequest.getJournalText(),LocalDateTime.now(),quote);
     }
@@ -45,7 +46,7 @@ public class MoodService {
         List<Mood> moodList=moodRepo.findByUser(user);
         List<MoodEntryResponse> responseList = new ArrayList<>();
         for(Mood mood : moodList){
-            MoodEntryResponse res = new MoodEntryResponse(mood.getMood(),mood.getJournalText(),mood.getCreatedAt(),null);
+            MoodEntryResponse res = new MoodEntryResponse(mood.getMood(),mood.getJournalText(),mood.getCreatedAt(),null,mood.isSaved());
             responseList.add(res);
         }
         return responseList;
@@ -148,6 +149,9 @@ public class MoodService {
     }
 
     public Map<String, Object> getDashboardStats(String userEmail){
+        User user=  userRepo.findByEmail(userEmail).orElseThrow(()-> new UsernameNotFoundException(
+                "user not found!"
+        ));
             Map<String, Object> dashboard = new HashMap<>();
 
             Map<String, Object> moodMap = getMostFrequentMood(userEmail);
@@ -159,6 +163,8 @@ public class MoodService {
 
             Map<LocalDate, Map<String, Integer>> weeklyStats = getWeeklystats(userEmail);
             dashboard.put("lastWeekStats", weeklyStats);
+
+            dashboard.put("name",user.getName());
 
             return dashboard;
     }

@@ -9,7 +9,12 @@ public class MoodEntryResponse {
     private String journalText;
     private LocalDateTime createdAt;
     private String quote;
-    
+
+
+
+    private boolean saved;
+
+
     public MoodEntryResponse(){};
     
     public MoodEntryResponse(String mood, String journalText, LocalDateTime createdAt, String quote){
@@ -17,6 +22,14 @@ public class MoodEntryResponse {
         this.journalText=journalText;
         this.createdAt=createdAt;
         this.quote=quote;
+    }
+
+    public MoodEntryResponse(String mood, String journalText, LocalDateTime createdAt, String quote, boolean saved){
+        this.mood=mood;
+        this.journalText=journalText;
+        this.createdAt=createdAt;
+        this.quote=quote;
+        this.saved=saved;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -49,5 +62,13 @@ public class MoodEntryResponse {
 
     public String getQuote(){
         return quote;
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(boolean saved) {
+        this.saved = saved;
     }
 }

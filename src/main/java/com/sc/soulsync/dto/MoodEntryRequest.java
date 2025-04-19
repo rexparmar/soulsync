@@ -3,6 +3,8 @@ package com.sc.soulsync.dto;
 public class MoodEntryRequest {
     private String mood;
     private String journalText;
+    private boolean saved;
+
 
     public MoodEntryRequest(){};
 
@@ -25,5 +27,13 @@ public class MoodEntryRequest {
 
     public String getJournalText(){
         return journalText;
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(boolean saved) {
+        this.saved = saved;
     }
 }
